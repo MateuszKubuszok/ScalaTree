@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <title>Scala: order of learning stuff</title>
+  <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <script type="text/javascript" src="data.js"></script>
+  <style type="text/css">
+    body {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+    }
+    #diagram {
+      width: 100%;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id=diagram></div>
+  <script type="text/javascript">
+    // create an array with nodes
+
+    const nodes = new vis.DataSet(Object.values(topics));
+
+    // create an array with edges
+    const edges = new vis.DataSet(
+      Object.values(topics).flatMap(topic => topic.requires.map(parentId => ({
+        from: parentId,
+        to: topic.id,
+        arrows: "to",
+      })))
+    );
+
+    // create a network
+    const container = document.getElementById('diagram');
+
+    // provide the data in the vis format
+    const data = {
+      nodes: nodes,
+      edges: edges,
+    };
+    const options = {
+      autoResize: true,
+      height: '100%',
+      width: '100%',
+      layout: {
+        hierarchical: true,
+      },
+    };
+
+    // initialize your network!
+    const network = new vis.Network(container, data, options);
+  </script>
+</body>
+</html>
