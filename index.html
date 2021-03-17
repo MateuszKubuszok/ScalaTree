@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id=content>
+  <div id=content class=no-topic>
     <h1>Scala</h1>
     <h2>the order of learning</h2>
     <p>Arbitrarily decided by the author(s) of this site.</p>
@@ -80,9 +80,11 @@
         }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
         console.log(sources);
         document.getElementById('sources').innerHTML=sources;
+        document.getElementById('content').classList.remove('no-topic');
       }
     });
     network.on('deselectNode', params => {
+      document.getElementById('content').classList.add('no-topic');
       document.getElementById('name').innerHTML="";
       document.getElementById('description').innerHTML="";
       document.getElementById('sources').innerHTML="";

@@ -48,3 +48,4 @@ ul {
   margin-left: 0;
   margin-right: 0;
 }
+#content.no-topic h3, #content.no-topic fieldset { display: none; }
