@@ -59,5 +59,8 @@ const typeClasses = defineTopic(
     defineSource('Type classes in Scala - Ad-hoc polymorphism (Scalac blog)', 'https://scalac.io/blog/typeclasses-in-scala/'),
   ],
   Category.fp,
-  [parametricTypes, implicits]
+  [
+    parametricTypes,
+    implicits,
+  ]
 );
