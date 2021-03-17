@@ -1,0 +1,39 @@
+body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  font-family: Helvetica, sans-serif;
+}
+a {
+  color: #FF5733;
+}
+fieldset {
+  border: 1px solid #FF5733;
+  padding: 25px;
+}
+h1, h2, legend {
+  color: #FF5733;
+  font-weight: bold;
+}
+ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#diagram {
+  width: 50%;
+  height: 100vh;
+  margin: 0;
+  float: left;
+}
+#content {
+  width: 50%;
+  height: 100vh;
+  margin: 0;
+  float: right;
+}
+#content > * {
+  margin: 50px 50px 0 50px;
+}
+#content h2 {
+  margin-top: 0;
+}
