@@ -18,7 +18,7 @@ const defineTopic = (name, description_, sources_, category_, requires_) => {
   const sources     = sources_||[];
   const category    = category_||Category.language;
   const requires    = requires_||[];
-  const level       = ((requires.length > 0) ? Math.min.apply(Math, requires.map(parentId => topics[parentId].level)) : 0) + 1;
+  const level       = ((requires.length > 0) ? Math.max.apply(Math, requires.map(parentId => topics[parentId].level)) : 0) + 1;
   const topic = {
       'id'          : id,
       'name'        : name,
@@ -126,6 +126,7 @@ const functor = defineTopic(
   <br><br>
   E.g. if your graph's nodes would be types and edges would be functions from one type into the other, a functor would provide a mapping from
   functions in one set into another: <code>List</code> functor would translate <code>Int => String</code> into <code>List[Int] => List[String]</code>.
+  Usually, we convert the function and apply the value in one step with <code>fa.map(aToB)</a>.
   <br><br>
   If nodes represented types but edges represented subtyping relation, then functor would tell us that if there is subtyping relation between the types,
   then then the types created by passing these types into some parametric type have to be subtypes as well. Since functor is also known as <b>covariant
@@ -148,7 +149,7 @@ const contravariant = defineTopic(
   E.g. with nodes being types and edges functions models, then convariant functor turns e.g. <code>Int => String</code> into <code>Subscriber[String] => Subscriber[Int]</code>.
   <br><br>
   With nodes being types and edges subtyping, we get things like <code>A <: B</code> implying that <code>Subscriber[B] <: Subscriber[A]</code> - meaing that <code>Subscriber[X]</code>
-  is covariant in <code>X</code>.
+  is covariant in <code>X</code>. Usually, we convert the function and apply value with <code>fb.contramap(aToB)</code>.
   <br><br>
   Good intuition is to treat such covariant functors as consumers. If you have a consumer of values <code>B</code> then you can "prepend" function <code>A => B</code>
   to make a consumer of <code>A</code>. ALso if you have a consumer of <code>B</cdoe> and <code>A <: B</code> then consumer can be safely upcasted to consumer of <code>A</code>.`,
@@ -159,9 +160,41 @@ const contravariant = defineTopic(
   ]
 );
 
-// TODO: applicative
+const applicative = defineTopic(
+  'Applicative Functor',
+  `If functor help us model producers and "append" new operations at the output, applicative functors let us combine outputs of 2 producers with <code>fa.map2(fb) { (a,b) => c}</code>.
+  <br><br>
+  Another way of thinking about them is as an ability to create a Cartesian product of all values produced by 2 producers to create a producer of tuples (<code>(fa, fb).tupled</code>).
+  Since applicative functor is still a functor you can <code>map</code> these tuples which can be done (for 2 or more producers) in one step using <code>(fa, fb, fc).mapN { (a,b,c) => d }</code>.`,
+  [],
+  Category.fp,
+  [
+    functor,
+  ]
+);
 
-// TODO: monad
+const monad = defineTopic(
+  'Monad',
+  `Basically a functor with an ability to <code>flatten</code>.
+  <br><br>
+  Functor is a producer where we can "append" function on the output. But this function is always takes 1 value and returns 1 value. We have no way of returning 0 or more than 1 values.
+  However, if we have e.g. a <code>List</code> we could map it to another <code>List</code> - we could control how many elements will be produced from a single input value.
+  Then, <code>flatten</code> would take care about merging <code>List</code>s together. Same principle applies to producers which aren't containers, but might model async or failable
+  computations. By manually creating the producer out of value, we might decide to interupt the streak of successful computations. (Recovery would not be a part of the interface of monads).
+  <br><br>
+  Usually, we combine <code>map</code> and <code>flatten</code> into a single operation: <code>flatMap</code>. 
+  <br><br>
+  We require that for each monad has some "stupid" wrapping utility, which simply take a value a create a single-value producer out of it with no extra logic.
+  This way <code>flatMap(wrap)</code> is a noop. We also want this producer's flattening be associative.
+  <br><br>
+  Every monad is applicative functor because <code>flatMap</code> allows implementation of applicative interfaces. It's worth remembering though that while applicative interface
+  isn't enforcing any order of evaluations, monadic interface does, making all applicative operations on monad sequential.`,
+  [],
+  Category.fp,
+  [
+    applicative,
+  ]
+);
 
 const freeAlgebra = defineTopic(
   'Free Algebra',
@@ -205,7 +238,7 @@ const freeMonad = defineTopic(
   [],
   Category.fp,
   [
-    //monad,
+    monad,
     freeAlgebra,
   ]
 );
