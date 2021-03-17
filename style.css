@@ -1,23 +1,23 @@
 body {
-  background: #FF5733;
+  background: #ff5733;
   width: 100%;
   height: 100vh;
   margin: 0;
   font-family: Helvetica, sans-serif;
 }
 a {
-  color: #FF5733;
+  color: #ff5733;
 }
 fieldset {
-  border: 1px solid #FF5733;
+  border: 1px solid #ff5733;
   padding: 25px;
 }
 h1, h2, h3, legend {
-  color: #FF5733;
+  color: #ff5733;
   font-weight: bold;
 }
 hr {
-  border: 1px solid #FF5733;
+  border: 1px solid #ff5733;
 }
 ul {
   margin-top: 0;

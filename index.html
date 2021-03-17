@@ -32,7 +32,7 @@
       Object.values(topics).flatMap(topic => topic.requires.map(parentId => ({
         from: parentId,
         to: topic.id,
-        arrows: "to",
+        arrows: 'to',
       })))
     );
 
@@ -65,23 +65,23 @@
 
     // initialize your network!
     const network = new vis.Network(container, data, options);
-    network.on("selectNode", params => {
+    network.on('selectNode', params => {
       if (params.nodes.length > 0) {
         const topic = topics[params.nodes[0]];
-        document.getElementById("name").innerHTML=topic.name;
-        document.getElementById("description").innerHTML=topic.description;
+        document.getElementById('name').innerHTML=topic.name;
+        document.getElementById('description').innerHTML=topic.description;
         const sources = '<ul>' + topic.sources.map(source => {
           if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
           else return source.title;
         }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
         console.log(sources);
-        document.getElementById("sources").innerHTML=sources;
+        document.getElementById('sources').innerHTML=sources;
       }
     });
-    network.on("deselectNode", params => {
-      document.getElementById("name").innerHTML="";
-      document.getElementById("description").innerHTML="";
-      document.getElementById("sources").innerHTML="";
+    network.on('deselectNode', params => {
+      document.getElementById('name').innerHTML="";
+      document.getElementById('description').innerHTML="";
+      document.getElementById('sources').innerHTML="";
     });
   </script>
 </body>
