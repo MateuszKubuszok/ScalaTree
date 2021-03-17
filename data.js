@@ -126,7 +126,7 @@ const functor = defineTopic(
   <br><br>
   E.g. if your graph's nodes would be types and edges would be functions from one type into the other, a functor would provide a mapping from
   functions in one set into another: <code>List</code> functor would translate <code>Int => String</code> into <code>List[Int] => List[String]</code>.
-  Usually, we convert the function and apply the value in one step with <code>fa.map(aToB)</a>.
+  Usually, we convert the function and apply the value in one step with <code>fa.map(aToB)</code>.
   <br><br>
   If nodes represented types but edges represented subtyping relation, then functor would tell us that if there is subtyping relation between the types,
   then then the types created by passing these types into some parametric type have to be subtypes as well. Since functor is also known as <b>covariant

@@ -10,7 +10,7 @@ a {
 }
 fieldset {
   border: 1px solid rgb(192, 99, 89);
-  padding: 25px;
+  padding: 20px;
 }
 h1, h2, h3, legend {
   color: rgb(192, 99, 89);
@@ -25,21 +25,21 @@ ul {
 }
 #diagram {
   background: #fff;
-  width: 50%;
+  width: 66%;
   height: 100vh;
   margin: 0;
   float: left;
 }
 #content {
   background: #fff;
-  width: 49.5%;
+  width: 33.9%;
   height: 100vh;
   margin: 0;
   float: right;
   overflow: auto;
 }
 #content > * {
-  margin: 50px 50px 0 50px;
+  margin: 40px 40px 0 40px;
 }
 #content h2 {
   margin-top: 0;
