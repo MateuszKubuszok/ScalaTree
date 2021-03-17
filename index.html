@@ -5,12 +5,14 @@
   <title>Scala: order of learning stuff</title>
   <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <script type="text/javascript" src="data.js"></script>
-   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id=content>
     <h1>Scala</h1>
     <h2>order of learning</h2>
+    <hr/>
+    <h3 id=name></h3>
     <fieldset>
       <legend>Short description</legend>
       <div id=description></div>
@@ -23,7 +25,6 @@
   <div id=diagram></div>
   <script type="text/javascript">
     // create an array with nodes
-
     const nodes = new vis.DataSet(Object.values(topics));
 
     // create an array with edges
@@ -67,18 +68,20 @@
     network.on("selectNode", params => {
       if (params.nodes.length > 0) {
         const topic = topics[params.nodes[0]];
+        document.getElementById("name").innerHTML=topic.name;
         document.getElementById("description").innerHTML=topic.description;
         const sources = '<ul>' + topic.sources.map(source => {
           if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
           else return source.title;
-        }).map(src => '<li>' + src + '</li>').join() + '</ul>';
+        }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
         console.log(sources);
         document.getElementById("sources").innerHTML=sources;
       }
     });
     network.on("deselectNode", params => {
-        document.getElementById("description").innerHTML="";
-        document.getElementById("sources").innerHTML="";
+      document.getElementById("name").innerHTML="";
+      document.getElementById("description").innerHTML="";
+      document.getElementById("sources").innerHTML="";
     });
   </script>
 </body>

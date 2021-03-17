@@ -1,29 +1,29 @@
 // utilities and definitions
 
 const Category = {
-    "language" : "language",
-    "fp" : "functional programming",
+    'language' : 'language',
+    'fp' : 'functional programming',
 };
 
 let topics = {};
 
 const defineSource = (title, href) => ({
-  "title" : title,
-  "href"  : href,
+  'title' : title,
+  'href'  : href,
 });
 
 const defineTopic = (name, description, sources, category, requires) => {
-  const id = name.toLowerCase().replace(/[^a-z]+/g, "-");
+  const id = name.toLowerCase().replace(/[^a-z]+/g, '-');
   const topic = {
-    "id"          : id,
-      "name"        : name,
-      "description" : description||"",
-      "sources"     : sources||[],
-      "category"    : category||Category.language,
-      "requires"    : requires||[],
+      'id'          : id,
+      'name'        : name,
+      'description' : description||'',
+      'sources'     : sources||[],
+      'category'    : category||Category.language,
+      'requires'    : requires||[],
       // for vis.js
-      "label"       : name,
-      "group"       : category||Category.language,
+      'label'       : name,
+      'group'       : category||Category.language,
   };
   topics[id] = topic;
   return id;
@@ -44,7 +44,9 @@ const parametricTypes = defineTopic(
 const implicits = defineTopic(
   'Implicits',
   'Mechanism of finding and passing arguments into functions and methods by the compiler, based on their type',
-  [],
+  [
+    defineSource('Implicit Parameters | Tour of Scala', 'https://docs.scala-lang.org/tour/implicit-parameters.html'),
+  ],
   Category.language,
   []
 );
@@ -52,7 +54,10 @@ const implicits = defineTopic(
 const typeClasses = defineTopic(
   'Type Classes',
   'A way of defining some interface and letting our type use it, which doesn\'t require us to modify the type to extend some trait/class',
-  [],
+  [
+    defineSource('Type classes (Cats documentation)', 'https://typelevel.org/cats/typeclasses.html'),
+    defineSource('Type classes in Scala - Ad-hoc polymorphism (Scalac blog)', 'https://scalac.io/blog/typeclasses-in-scala/'),
+  ],
   Category.fp,
   [parametricTypes, implicits]
 );

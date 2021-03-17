@@ -1,4 +1,5 @@
 body {
+  background: #FF5733;
   width: 100%;
   height: 100vh;
   margin: 0;
@@ -11,22 +12,27 @@ fieldset {
   border: 1px solid #FF5733;
   padding: 25px;
 }
-h1, h2, legend {
+h1, h2, h3, legend {
   color: #FF5733;
   font-weight: bold;
+}
+hr {
+  border: 1px solid #FF5733;
 }
 ul {
   margin-top: 0;
   margin-bottom: 0;
 }
 #diagram {
+  background: #fff;
   width: 50%;
   height: 100vh;
   margin: 0;
   float: left;
 }
 #content {
-  width: 50%;
+  background: #fff;
+  width: 49.5%;
   height: 100vh;
   margin: 0;
   float: right;
@@ -36,4 +42,8 @@ ul {
 }
 #content h2 {
   margin-top: 0;
+}
+#content hr {
+  margin-left: 0;
+  margin-right: 0;
 }
