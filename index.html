@@ -11,13 +11,38 @@
       margin: 0;
     }
     #diagram {
-      width: 100%;
+      width: 50%;
       height: 100vh;
+      margin: 0;
+      float: left;
+    }
+    #content {
+      width: 50%;
+      height: 100vh;
+      margin: 0;
+      float: right;
+    }
+    #content fieldset {
+      margin: 50px 50px 0 50px;
+      border: 1px solid gray;
+      padding: 25px;
     }
   </style>
 </head>
 <body>
   <div id=diagram></div>
+  <div id=content>
+    <h1>Scala</h1>
+    <h2>order of learning</h2>
+    <fieldset>
+      <legend>Short description</legend>
+      <div id=description></div>
+    </fieldset>
+    <fieldset>
+      <legend>Sources</legend>
+      <div id=sources></div>
+    </fieldset>
+  </div>
   <script type="text/javascript">
     // create an array with nodes
 
@@ -45,12 +70,38 @@
       height: '100%',
       width: '100%',
       layout: {
-        hierarchical: true,
+        hierarchical: {
+          direction: 'UD'
+        }
+      },
+      groups: {
+        [Category.language]: {
+          color: '#f1948a',
+        },
+        [Category.fp]: {
+          color: "#aed6f1",
+        }, 
       },
     };
 
     // initialize your network!
     const network = new vis.Network(container, data, options);
+    network.on("selectNode", params => {
+      if (params.nodes.length > 0) {
+        const topic = topics[params.nodes[0]];
+        document.getElementById("description").innerHTML=topic.description;
+        const sources = '<ul>' + topic.sources.map(source => {
+          if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
+          else return source.title;
+        }).map(src => '<li>' + src + '</li>').join() + '</ul>';
+        console.log(sources);
+        document.getElementById("sources").innerHTML=sources;
+      }
+    });
+    network.on("deselectNode", params => {
+        document.getElementById("description").innerHTML="";
+        document.getElementById("sources").innerHTML="";
+    });
   </script>
 </body>
 </html>
