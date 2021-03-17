@@ -70,7 +70,9 @@ const typeClasses = defineTopic(
 const lifting = defineTopic(
   'Lifting',
   `In mathematics a practice of converting value into some intermediate type which is for some reason convenient to us.
+  <br><br>
   Working is done mostly on this intermediate type before converting it into the target type.
+  <br><br>
   In practice programmers use this name for converting raw values into values in some wrapper e.g. putting <code>Int</code> into <code>Option[Int]</code>,
   <code>String</code> into successful <code>Future[String]</code>, etc.`,
   [],
@@ -151,12 +153,16 @@ const contravariant = defineTopic(
   ]
 );
 
+// TODO: applicative
+
+// TODO: monad
 
 const freeAlgebra = defineTopic(
   'Free Algebra',
   `Generator of algebras of sort where you provide a set of values and it will return an algebra of certain type,
   e.g. free monoid will take your set of values and return something that is a monoid (you can concatenate its values and there is some empty/neutral/identity value).
   Values of the old set have to be lifted before you can start working with them.
+  <br><br>
   Since free algebras are usually just a data structure recording operations, you can later on provide an actual operations and replay them on elements.
   E.g. free semigroup of A, would allow you adding some A wrappers together, and later on - when you provide an associative operations under A
   - to calculate the result under A.`,
@@ -170,7 +176,9 @@ const freeAlgebra = defineTopic(
 
 const freeMonoid = defineTopic(
   'Free Monoid',
-  `Free algebra that generates monoid. Virtually equal to <code>List</code>: when you give it <code>String</code>, you have a <code>List[String]</code>,
+  `Free algebra that generates monoid.
+  <br><br>
+  Virtually equal to <code>List</code>: when you give it <code>String</code>, you have a <code>List[String]</code>,
   when you give it <code>Int</code> you have a <code>List[Int]</code>.
   Lists can be concatenated, order of concatenations matters, their grouping doesn't - <code>(a ++ b) ++ c = a ++ (b ++ c)</code>.
   Empty <code>List</code> doesn't affect the result of concatenation.
@@ -185,6 +193,7 @@ const freeMonoid = defineTopic(
 const freeMonad = defineTopic(
   'Free Monad',
   `Generator which takes a functor and returns wrapper which adds to it an ability to flatten values and wrap pure (non-functor) values.
+  <br><br>
   Usually used with a functor representing some set of domain operations, interpreter running these operations into some side-effecting type,
   and side-effecting type being a monad in order to replay the order of operations and all the logic.`,
   [],
