@@ -12,18 +12,24 @@ const defineSource = (title, href) => ({
   'href'  : href,
 });
 
-const defineTopic = (name, description, sources, category, requires) => {
-  const id = name.toLowerCase().replace(/[^a-z]+/g, '-');
+const defineTopic = (name, description_, sources_, category_, requires_) => {
+  const id          = name.toLowerCase().replace(/[^a-z]+/g, '-');
+  const description = description_||'';
+  const sources     = sources_||[];
+  const category    = category_||Category.language;
+  const requires    = requires_||[];
+  const level       = ((requires.length > 0) ? Math.min.apply(Math, requires.map(parentId => topics[parentId].level)) : 0) + 1;
   const topic = {
       'id'          : id,
       'name'        : name,
-      'description' : description||'',
-      'sources'     : sources||[],
-      'category'    : category||Category.language,
-      'requires'    : requires||[],
+      'description' : description,
+      'sources'     : sources,
+      'category'    : category,
+      'requires'    : requires,
       // for vis.js
       'label'       : name,
-      'group'       : category||Category.language,
+      'group'       : category,
+      'level'       : level,
   };
   topics[id] = topic;
   return id;
