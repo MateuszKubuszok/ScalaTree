@@ -4,6 +4,7 @@ const Category = {
     'language' : 'language',
     'fp' : 'functional programming',
     'akka' : 'akka',
+    'patterns': 'design patters'
 };
 
 let topics = {};
@@ -67,16 +68,6 @@ const standardLibrary = defineTopic(
   ],
   Category.language,
   []
-);
-
-const tuple = defineTopic(
-  'Tuple',
-  `TODO`,
-  [],
-  Category.language,
-  [
-    standardLibrary,
-  ]
 );
 
 const types = defineTopic(
@@ -356,6 +347,16 @@ const freeMonad = defineTopic(
   ]
 );
 
+const tuple = defineTopic(
+  'Tuple',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    standardLibrary,
+  ]
+);
+
 const either = defineTopic(
   'Either',
   `TODO`,
@@ -363,6 +364,26 @@ const either = defineTopic(
   Category.language,
   [
     standardLibrary,
+  ]
+);
+
+const option = defineTopic(
+  'Option',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    either,
+  ]
+);
+
+const tryScala = defineTopic(
+  'Try',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    either,
   ]
 );
 
@@ -377,6 +398,86 @@ const collections = defineTopic(
   ]
 );
 
+
+const builder = defineTopic(
+    'Builder',
+    `TODO`,
+    [],
+    Category.patterns,
+    []
+);
+topics[builder].level = 4;
+
+const iterable = defineTopic(
+    'Iterable',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        collections,
+    ]
+);
+
+const seq = defineTopic(
+    'Seq',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        iterable,
+    ]
+);
+
+const set = defineTopic(
+    'Set',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        iterable,
+    ]
+);
+
+const map = defineTopic(
+    'Map',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        iterable,
+    ]
+);
+
+const vector = defineTopic(
+    'Vector',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        seq,
+    ]
+);
+
+const list = defineTopic(
+    'List',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        seq,
+    ]
+);
+
+const flatmap = defineTopic(
+    'flatMap',
+    `TODO`,
+    [],
+    Category.language,
+    [
+        iterable,
+    ]
+);
+
 const forSimplified = defineTopic(
   'Simple for "loop"',
   `TODO`,
@@ -385,6 +486,20 @@ const forSimplified = defineTopic(
   [
     collections,
   ]
+);
+
+const collectionBuilders = defineTopic(
+    'Collection builders',
+    `TODO`,
+    [],
+    Category.collections,
+    [
+        builder,
+        vector,
+        list,
+        set,
+        map,
+    ]
 );
 
 const variance = defineTopic(
@@ -432,16 +547,28 @@ const forComprehension = defineTopic(
   [
     forSimplified,
     monad,
+    flatmap
   ]
 );
 
-const actorModel = defineTopic(
-  'Actor Model',
+// Actors
+
+const actor = defineTopic(
+  'Actor',
+  `TODO`,
+  [],
+  Category.patterns,
+  []
+);
+
+const akkaActor = defineTopic(
+  'Akka Actor',
   `TODO`,
   [],
   Category.akka,
-  []
+  [actor]
 );
+
 
 // manual workaround for https://github.com/visjs/vis-network/issues/83 and https://github.com/visjs/vis-network/issues/84
 
@@ -459,7 +586,7 @@ const reorderLevel = (head, ...tail) => {
 
 
 reorderLevel(standardLibrary, types, functions, algebra);
-reorderLevel(either, tuple, parametricTypes, currying, implicits, lifting, semigroup);
+reorderLevel(tuple, either, parametricTypes, currying, implicits, lifting, semigroup);
 reorderLevel(collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
 reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
 reorderLevel(forComprehension, freeMonad);
