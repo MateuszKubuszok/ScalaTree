@@ -27,6 +27,10 @@ const options = {
       direction: 'UD'
     }
   },
+  interaction: {
+    hover: true,
+    multiselect: false,
+  },
   nodes: {
     shape: 'box'
   },
@@ -56,9 +60,9 @@ network.on('selectNode', params => {
       if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
       else return source.title;
     }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
-    console.log(sources);
     document.getElementById('sources').innerHTML=sources;
     document.getElementById('content').classList.remove('no-topic');
+    window.location.hash = topic.id;
   }
 });
 network.on('deselectNode', params => {
@@ -66,4 +70,14 @@ network.on('deselectNode', params => {
   document.getElementById('name').innerHTML="";
   document.getElementById('description').innerHTML="";
   document.getElementById('sources').innerHTML="";
+  window.location.hash = '';
 });
+const traceHashChange = () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === '') return;
+  if (network.getSelectedNodes().find(n => n === hash)) return;
+  network.setSelection({nodes:[hash], edges: []});
+};
+traceHashChange();
+
+window.onhashchange = traceHashChange;
