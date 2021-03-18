@@ -2,9 +2,9 @@
 
 const Category = {
     'language' : 'language',
-    'fp' : 'functional programming',
-    'akka' : 'akka',
-    'patterns': 'design patters'
+    'fp'       : 'functional programming',
+    'akka'     : 'akka',
+    'patterns' : 'design patters',
 };
 
 let topics = {};
@@ -589,4 +589,5 @@ reorderLevel(standardLibrary, types, functions, algebra);
 reorderLevel(tuple, either, parametricTypes, currying, implicits, lifting, semigroup);
 reorderLevel(collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
 reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
+reorderLevel(seq, set, map, flatmap, monad, variance);
 reorderLevel(forComprehension, freeMonad);

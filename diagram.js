@@ -76,6 +76,9 @@ const options = {
     [Category.akka]: {
       color: '#82e0aa',
     },
+    [Category.patterns]: {
+      color: '#f9e79f',
+    },
   },
   physics: {
     enabled: true,
