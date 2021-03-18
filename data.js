@@ -459,7 +459,7 @@ const reorderLevel = (head, ...tail) => {
 
 
 reorderLevel(standardLibrary, types, functions, algebra);
-reorderLevel(either, tuple, implicits, parametricTypes, currying, lifting, semigroup);
+reorderLevel(either, tuple, parametricTypes, currying, implicits, lifting, semigroup);
 reorderLevel(collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
 reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
 reorderLevel(forComprehension, freeMonad);
