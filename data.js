@@ -39,6 +39,68 @@ const defineTopic = (name, description_, sources_, category_, requires_) => {
 
 // topics
 
+const functions = defineTopic(
+  'Function',
+  `TODO`,
+  [],
+  Category.fp,
+  []
+);
+
+const currying = defineTopic(
+  'Currying',
+  `TODO`,
+  [],
+  Category.fp,
+  [
+    functions,
+  ]
+);
+
+const standardLibrary = defineTopic(
+  'Standard Library',
+  `Set of utilities that comes together with language.
+  <br><br>
+  Because it is improved together with language there were some breaking changes during major releases.`,
+  [
+    defineSource('Scala API Docs | Scala Documentation', 'https://docs.scala-lang.org/api/all.html'),
+  ],
+  Category.language,
+  []
+);
+
+const tuple = defineTopic(
+  'Tuple',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    standardLibrary,
+  ]
+);
+
+const types = defineTopic(
+  'Types',
+  `TODO`,
+  [],
+  Category.language,
+  []
+);
+
+const functionTypes = defineTopic(
+  'Function Types',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    standardLibrary,
+    functions,
+    currying,
+    types,
+  ]
+);
+
+
 const parametricTypes = defineTopic(
   'Parametric Types',
   `Known in Java as Generic Types and in C++ as Class Templates.
@@ -48,7 +110,9 @@ const parametricTypes = defineTopic(
     defineSource('Generic Classes | Tour of Scala', 'https://docs.scala-lang.org/tour/generic-classes.html'),
   ],
   Category.language,
-  []
+  [
+    types,
+  ]
 );
 
 const implicits = defineTopic(
@@ -62,7 +126,9 @@ const implicits = defineTopic(
     defineSource('Implicits, type classes, and extension methods, part 1: with type classes in mind (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-1/'),
   ],
   Category.language,
-  []
+  [
+    types,
+  ]
 );
 
 const typeClasses = defineTopic(
@@ -97,7 +163,9 @@ const lifting = defineTopic(
   <code>String</code> into successful <code>Future[String]</code>, etc.`,
   [],
   Category.fp,
-  []
+  [
+    functions,
+  ]
 );
 
 const algebra = defineTopic(
@@ -288,6 +356,37 @@ const freeMonad = defineTopic(
   ]
 );
 
+const either = defineTopic(
+  'Either',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    standardLibrary,
+  ]
+);
+
+const collections = defineTopic(
+  'Collections',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    standardLibrary,
+    parametricTypes,
+  ]
+);
+
+const forSimplified = defineTopic(
+  'Simple for "loop"',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    collections,
+  ]
+);
+
 const variance = defineTopic(
   'Variance',
   `Property of a type parameter (considered for each type parameter separately).
@@ -314,6 +413,28 @@ const variance = defineTopic(
   ]
 );
 
+const forComprehension = defineTopic(
+  'For-comprehension',
+  `Syntactic sugar for: <code>map</code>, <code>flatMap</code>, <code>foreach</code> and <code>withFilter</code>:
+  <br><br>
+  <ul>
+    <li>starts with a <code>for</code> keyword, followed by series of <code>x <- y</code> instructios in brackets after which we put an expression, optionally preceeded with <code>yield</code></li>
+    <li>if we <code>yield</code> each new <code><-</code> introduces a new nesting of <code>flatMap</code>s, with the exception of the last operation which uses <code>map</code></li>
+    <li>without <code>yield</code> we greate a series of nested foreach operations</li>
+    <li><code>if [condition]</code> translates to <code>withFilter(lastValue => condition)</code>
+  </ul>
+  `,
+  [
+    defineSource('For Comprehensions | Tour of Scala', 'https://docs.scala-lang.org/tour/for-comprehensions.html'),
+    defineSource('For Expressions | Scala Book', 'https://docs.scala-lang.org/overviews/scala-book/for-expressions.html'),
+  ],
+  Category.language,
+  [
+    forSimplified,
+    monad,
+  ]
+);
+
 const actorModel = defineTopic(
   'Actor Model',
   `TODO`,
@@ -324,18 +445,21 @@ const actorModel = defineTopic(
 
 // manual workaround for https://github.com/visjs/vis-network/issues/83 and https://github.com/visjs/vis-network/issues/84
 
-const reorderLevel = (left, right) => {
-  if (left.level !== right.level) {
-    console.warn(`Expected the same levels for ${left.id} and ${right.id}`);
-    return;
+const reorderLevel = (head, ...tail) => {
+  const left = topics[head];
+  for (idx in tail) {
+    const right = topics[tail[idx]];
+    if (left.level === right.level) {
+      right.hsort = left.hsort + idx + 1;
+    } else {
+      console.log(`Expected the same levels for ${left.id}:${left.level} and ${right.id}:${right.level}`);
+    } 
   }
-  topics[right].hsort = topics[left].hsort + 1;
 };
 
-reorderLevel(implicits, parametricTypes);
-reorderLevel(parametricTypes, lifting);
-reorderLevel(lifting, algebra);
-reorderLevel(freeAlgebra, semigroup);
-reorderLevel(applicative, monoid);
-reorderLevel(monad, freeMonoid);
-reorderLevel(variance, monad);
+
+reorderLevel(standardLibrary, types, functions, algebra);
+reorderLevel(either, tuple, implicits, parametricTypes, currying, lifting, semigroup);
+reorderLevel(collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
+reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
+reorderLevel(forComprehension, freeMonad);

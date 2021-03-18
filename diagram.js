@@ -102,7 +102,7 @@ const traceHashChange = () => {
   if (hash === '') return;
   if (network.getSelectedNodes().find(n => n === hash)) return;
   const topic = topics[hash];
-  if (topics) {
+  if (topics[hash]) {
     network.setSelection({nodes:[hash], edges: []});
     setContent(topic);
   }
