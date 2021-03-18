@@ -1,3 +1,23 @@
+// set #content elements and hash location
+const setContent = topic => {
+  document.getElementById('name').innerHTML=topic.name;
+  document.getElementById('description').innerHTML=topic.description;
+  const sources = '<ul>' + topic.sources.map(source => {
+    if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
+    else return source.title;
+  }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
+  document.getElementById('sources').innerHTML=sources;
+  document.getElementById('content').classList.remove('no-topic');
+  window.location.hash = topic.id;
+};
+const unsetContent = () => {
+  document.getElementById('content').classList.add('no-topic');
+  document.getElementById('name').innerHTML="";
+  document.getElementById('description').innerHTML="";
+  document.getElementById('sources').innerHTML="";
+  window.location.hash = '';
+};
+
 // create an array with nodes
 const nodes = new vis.DataSet(Object.values(topics));
 
@@ -49,34 +69,27 @@ const options = {
   }
 };
 
+
+
 // initialize your network!
 const network = new vis.Network(container, data, options);
 network.on('selectNode', params => {
   if (params.nodes.length > 0) {
-    const topic = topics[params.nodes[0]];
-    document.getElementById('name').innerHTML=topic.name;
-    document.getElementById('description').innerHTML=topic.description;
-    const sources = '<ul>' + topic.sources.map(source => {
-      if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
-      else return source.title;
-    }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
-    document.getElementById('sources').innerHTML=sources;
-    document.getElementById('content').classList.remove('no-topic');
-    window.location.hash = topic.id;
+    setContent(topics[params.nodes[0]]);
   }
 });
 network.on('deselectNode', params => {
-  document.getElementById('content').classList.add('no-topic');
-  document.getElementById('name').innerHTML="";
-  document.getElementById('description').innerHTML="";
-  document.getElementById('sources').innerHTML="";
-  window.location.hash = '';
+  unsetContent();
 });
 const traceHashChange = () => {
   const hash = window.location.hash.replace('#', '');
   if (hash === '') return;
   if (network.getSelectedNodes().find(n => n === hash)) return;
-  network.setSelection({nodes:[hash], edges: []});
+  const topic = topics[hash];
+  if (topics) {
+    network.setSelection({nodes:[hash], edges: []});
+    setContent(topic);
+  }
 };
 traceHashChange();
 

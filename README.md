@@ -20,7 +20,7 @@ const newTopic = defineTopic(
   // define a name - it will be also used to generate id by replacing all non-letters with '-''
   'New topic',
   // define a short description
-  'This will be a description',
+  `This will be a description`, // use backticks as they support multiline strings 
   // define list of sources (title and optional link)
   [
     defineSource('title', 'https://example.com'), // use trailing commas
