@@ -152,7 +152,7 @@ const contravariant = defineTopic(
   is covariant in <code>X</code>. Usually, we convert the function and apply value with <code>fb.contramap(aToB)</code>.
   <br><br>
   Good intuition is to treat such covariant functors as consumers. If you have a consumer of values <code>B</code> then you can "prepend" function <code>A => B</code>
-  to make a consumer of <code>A</code>. ALso if you have a consumer of <code>B</cdoe> and <code>A <: B</code> then consumer can be safely upcasted to consumer of <code>A</code>.`,
+  to make a consumer of <code>A</code>. ALso if you have a consumer of <code>B</code> and <code>A <: B</code> then consumer can be safely upcasted to consumer of <code>A</code>.`,
   [],
   Category.fp,
   [

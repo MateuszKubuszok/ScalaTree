@@ -36,8 +36,13 @@ const options = {
     },
     [Category.fp]: {
       color: "#aed6f1",
-    }, 
+    },
   },
+  physics: {
+    hierarchicalRepulsion: {
+      avoidOverlap: 0.5,
+    }
+  }
 };
 
 // initialize your network!
