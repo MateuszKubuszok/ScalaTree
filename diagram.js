@@ -18,16 +18,25 @@ const unsetContent = () => {
   window.location.hash = '';
 };
 
+// manual workaround for https://github.com/visjs/vis-network/issues/83 and https://github.com/visjs/vis-network/issues/84
+const topicsOrder = (() => {
+  let tmp = {};
+  Object.values(topics).sort((a,b) => a.hsort - b.hsort).forEach(t => tmp[t.id] = Object.keys(tmp).length);
+  return tmp;
+})();
+const sortedTopics = Object.values(topics).sort((a, b) => topicsOrder[a.id] - topicsOrder[b.id]);
+
 // create an array with nodes
-const nodes = new vis.DataSet(Object.values(topics));
+const nodes = new vis.DataSet(sortedTopics);
 
 // create an array with edges
 const edges = new vis.DataSet(
-  Object.values(topics).flatMap(topic => topic.requires.map(parentId => ({
-    from: parentId,
-    to: topic.id,
-    arrows: 'to',
+  sortedTopics.flatMap(topic => topic.requires.map(parentId => ({
+    from   : parentId,
+    to     : topic.id,
+    arrows : 'to',
   })))
+  .sort((a, b) => topicsOrder[a.to] - topicsOrder[b.to])
 );
 
 // create a network
@@ -48,28 +57,35 @@ const options = {
     }
   },
   interaction: {
+    dragNodes: false,
+    keyboard: true,
     hover: true,
     multiselect: false,
+    navigationButtons: true,
   },
   nodes: {
-    shape: 'box'
+    shape: 'box',
   },
   groups: {
     [Category.language]: {
       color: '#f1948a',
     },
     [Category.fp]: {
-      color: "#aed6f1",
+      color: '#aed6f1',
+    },
+    [Category.akka]: {
+      color: '#82e0aa',
     },
   },
   physics: {
+    enabled: true,
     hierarchicalRepulsion: {
+      springLength: 50,
+      damping: 0.5,
       avoidOverlap: 0.5,
     }
   }
 };
-
-
 
 // initialize your network!
 const network = new vis.Network(container, data, options);
@@ -91,6 +107,17 @@ const traceHashChange = () => {
     setContent(topic);
   }
 };
-traceHashChange();
+network.on("hoverNode", function (params) {
+  network.canvas.body.container.style.cursor = 'pointer'
+});
+network.on("blurNode", function (params) {
+  network.canvas.body.container.style.cursor = 'default'
+});
 
+
+traceHashChange();
 window.onhashchange = traceHashChange;
+
+network.on("stabilizationIterationsDone", function(){
+  network.setOptions( { physics: false } );
+});

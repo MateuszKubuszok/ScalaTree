@@ -3,6 +3,7 @@
 const Category = {
     'language' : 'language',
     'fp' : 'functional programming',
+    'akka' : 'akka',
 };
 
 let topics = {};
@@ -30,6 +31,7 @@ const defineTopic = (name, description_, sources_, category_, requires_) => {
       'label'       : name,
       'group'       : category,
       'level'       : level,
+      'hsort'       : 0,
   };
   topics[id] = topic;
   return id;
@@ -51,9 +53,13 @@ const parametricTypes = defineTopic(
 
 const implicits = defineTopic(
   'Implicits',
-  `Mechanism of finding and passing arguments into functions and methods by the compiler, based on their type.`,
+  `Mechanism of finding and passing arguments into functions and methods by the compiler, based on their type.
+  <br><br>
+  Requires that in the current scope there is either only one definition of <code>sought</code> type marked as <code>implicit</code>
+  or that there is clearly only one closest to call site according to scoping rules.`,
   [
     defineSource('Implicit Parameters | Tour of Scala', 'https://docs.scala-lang.org/tour/implicit-parameters.html'),
+    defineSource('Implicits, type classes, and extension methods, part 1: with type classes in mind (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-1/'),
   ],
   Category.language,
   []
@@ -61,10 +67,18 @@ const implicits = defineTopic(
 
 const typeClasses = defineTopic(
   'Type Classes',
-  `A way of defining some interface and letting our type use it, which doesn't require us to modify the type to extend some <code>trait</code>/<code>class</code>.`,
+  `A way of defining some interface and letting our type use it, which doesn't require us to modify the type to extend some <code>trait</code>/<code>class</code>.
+  <br><br>
+  It uses a parametric <code>trait</code>/<code>class</code> (called type class), where providing support for your type is done by implementing this parametric trait
+  with your type applied as type parameter, and putting this instance into implicit scope. Then when you demand an instance of this interface for your type,
+  compiler could provide it for you.
+  <br><br>
+  Often used together with extension methods - it will make it look like new methods becomes available to your type
+  when you provide an instance of this <code>trait</code>/<code>class</code>.`,
   [
     defineSource('Type classes (Cats documentation)', 'https://typelevel.org/cats/typeclasses.html'),
     defineSource('Type classes in Scala - Ad-hoc polymorphism (Scalac blog)', 'https://scalac.io/blog/typeclasses-in-scala/'),
+    defineSource('Implicits, type classes, and extension methods, part 1: with type classes in mind (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-1/#type-classes-in-scala'),
   ],
   Category.fp,
   [
@@ -89,8 +103,14 @@ const lifting = defineTopic(
 const algebra = defineTopic(
   'Algebra',
   `A set of values together with operations closed under it (functions taking and returning values only from this set),
-  e.g. real numbers with +, -, *, /, square matrices of certain dimension with addition and multiplication of these matrices, etc.`,
-  [],
+  e.g. real numbers with +, -, *, /, square matrices of certain dimension with addition and multiplication of these matrices, etc.
+  <br><br>
+  We give them names (semigroup, monoid, group, field, monad, ...) to quickly inform that some set has some operations defined and they fulfill some requirements.
+  <br><br>
+  In Scala we also sometimes just call some type an algebra to highlight that it should have some strictly defined properties (e.g. being Algebraic Data Type) as opposed to e.g. random Java interface.`,
+  [
+    defineSource('Algebras we love (Kubuszok.com blog)', 'https://kubuszok.com/2018/algebras-we-love/'),
+  ],
   Category.fp,
   []
 );
@@ -99,7 +119,10 @@ const semigroup = defineTopic(
   'Semigroup',
   `A set of values that you can combine together where order of combinations might matter but grouping (parenthesis) doesn't (associative operation):
   (A + B) + C = A + (B + C), e.g. <code>String</code> concatenation, number additions.`,
-  [],
+  [
+    defineSource('Semigroup (Cats documentation)', 'https://typelevel.org/cats/typeclasses/semigroup.html'),
+    defineSource('Algebras we love (Kubuszok.com blog)', 'https://kubuszok.com/2018/algebras-we-love/#semigroup'),
+  ],
   Category.fp,
   [
     algebra,
@@ -108,9 +131,12 @@ const semigroup = defineTopic(
 
 const monoid = defineTopic(
   'Monoid',
-  `A semigroup which has some neutral element (aka idenity) that is a value which you can "add" do another value without changing it,
+  `A semigroup which has some neutral/empty element (aka idenity) that is a value which you can "add" do another value without changing it,
   e.g. <code>String</code> concatenation with an empty <code>String</code>.`,
-  [],
+  [
+    defineSource('Monoid (Cats documentation)', 'https://typelevel.org/cats/typeclasses/monoid.html'),
+    defineSource('Algebras we love (Kubuszok.com blog)', 'https://kubuszok.com/2018/algebras-we-love/#monoid'),
+  ],
   Category.fp,
   [
     semigroup,
@@ -134,7 +160,10 @@ const functor = defineTopic(
   <br><br>
   Good intuition is treating such functors as producers. If you have a producer of values <code>A</code> then you can "append" function <code>A => B</code>
   to create a producer of <code>B</code>. Also if you have a producer of <code>B</code> and <code>A <: B</code> then producer can be safely upcasted to producer of <code>A</code>.`,
-  [],
+  [
+    defineSource('Functor (Cats documentation)', 'https://typelevel.org/cats/typeclasses/functor.html'),
+    defineSource('The F-words: functor and friends (Kubuszok.com blog)', 'https://kubuszok.com/2018/the-f-words-functors-and-friends/'),
+  ],
   Category.fp,
   [
     lifting,
@@ -152,8 +181,11 @@ const contravariant = defineTopic(
   is covariant in <code>X</code>. Usually, we convert the function and apply value with <code>fb.contramap(aToB)</code>.
   <br><br>
   Good intuition is to treat such covariant functors as consumers. If you have a consumer of values <code>B</code> then you can "prepend" function <code>A => B</code>
-  to make a consumer of <code>A</code>. ALso if you have a consumer of <code>B</code> and <code>A <: B</code> then consumer can be safely upcasted to consumer of <code>A</code>.`,
-  [],
+  to make a consumer of <code>A</code>. Also if you have a consumer of <code>B</code> and <code>A <: B</code> then consumer can be safely upcasted to consumer of <code>A</code>.`,
+  [
+    defineSource('Contravariant (Cats documentation)', 'https://typelevel.org/cats/typeclasses/contravariant.html'),
+    defineSource('The F-words: functor and friends (Kubuszok.com blog)', 'https://kubuszok.com/2018/the-f-words-functors-and-friends/#cofunctor'),
+  ],
   Category.fp,
   [
     functor,
@@ -166,7 +198,10 @@ const applicative = defineTopic(
   <br><br>
   Another way of thinking about them is as an ability to create a Cartesian product of all values produced by 2 producers to create a producer of tuples (<code>(fa, fb).tupled</code>).
   Since applicative functor is still a functor you can <code>map</code> these tuples which can be done (for 2 or more producers) in one step using <code>(fa, fb, fc).mapN { (a,b,c) => d }</code>.`,
-  [],
+  [
+    defineSource('Applicative (Cats documentation)', 'https://typelevel.org/cats/typeclasses/applicative.html'),
+    defineSource('The F-words: functor and friends (Kubuszok.com blog)', 'https://kubuszok.com/2018/the-f-words-functors-and-friends/#applicative-functors'),
+  ],
   Category.fp,
   [
     functor,
@@ -189,7 +224,10 @@ const monad = defineTopic(
   <br><br>
   Every monad is applicative functor because <code>flatMap</code> allows implementation of applicative interfaces. It's worth remembering though that while applicative interface
   isn't enforcing any order of evaluations, monadic interface does, making all applicative operations on monad sequential.`,
-  [],
+  [
+    defineSource('Monad (Cats documentation)', 'https://typelevel.org/cats/typeclasses/monad.html'),
+    defineSource('Different ways to understand a monad (Kubuszok.com blog)', 'https://kubuszok.com/2018/different-ways-to-understand-a-monad/'),
+  ],
   Category.fp,
   [
     applicative,
@@ -198,13 +236,13 @@ const monad = defineTopic(
 
 const freeAlgebra = defineTopic(
   'Free Algebra',
-  `Generator of algebras of sort where you provide a set of values and it will return an algebra of certain type,
+  `Generator of algebras of certain kind (e.g. monoid, semigroup, monad) where you provide a set of values and it will give you an algebra,
   e.g. free monoid will take your set of values and return something that is a monoid (you can concatenate its values and there is some empty/neutral/identity value).
   Values of the old set have to be lifted before you can start working with them.
   <br><br>
-  Since free algebras are usually just a data structure recording operations, you can later on provide an actual operations and replay them on elements.
-  E.g. free semigroup of A, would allow you adding some A wrappers together, and later on - when you provide an associative operations under A
-  - to calculate the result under A.`,
+  Since free algebras are usually just data that record operations in their structure, you can later on provide an actual operations and replay them on elements.
+  E.g. free semigroup of A, would allow you adding some A-wrappers together, and later on - when you provide an associative operations under A
+  - to calculate the result A by adding all wrapped values.`,
   [],
   Category.fp,
   [
@@ -222,7 +260,9 @@ const freeMonoid = defineTopic(
   Lists can be concatenated, order of concatenations matters, their grouping doesn't - <code>(a ++ b) ++ c = a ++ (b ++ c)</code>.
   Empty <code>List</code> doesn't affect the result of concatenation.
   Therefore <code>List</code> of <code>X</code> is a monoid. When you provide an operation combining <code>List</code>s elemets you can fold it into the single element as if you combined them directly.`,
-  [],
+  [
+    defineSource('Algebras we love (Kubuszok.com blog)', 'https://kubuszok.com/2018/algebras-we-love/#free-monoid'),
+  ],
   Category.fp,
   [
     monoid,
@@ -236,10 +276,66 @@ const freeMonad = defineTopic(
   <br><br>
   Usually used with a functor representing some set of domain operations, interpreter running these operations into some side-effecting type,
   and side-effecting type being a monad in order to replay the order of operations and all the logic.`,
-  [],
+  [
+    defineSource('Free Monad (Cats documentation)', 'https://typelevel.org/cats/datatypes/freemonad.html'),
+    defineSource('Different ways to understand a monad (Kubuszok.com blog)', 'https://kubuszok.com/2018/different-ways-to-understand-a-monad/#free-monads'),
+    defineSource('IO monad: which, why and how (Kubuszok.com blog)', 'https://kubuszok.com/2019/io-monad-which-why-and-how/#free-freer-eff'),
+  ],
   Category.fp,
   [
     monad,
     freeAlgebra,
   ]
 );
+
+const variance = defineTopic(
+  'Variance',
+  `Property of a type parameter (considered for each type parameter separately).
+  Tells us how subtyping relations of type applied to parameter affects subtyping relations of parametrized type.
+  Scala allows one of 3 possible options: invariance, covariance and contravariance.
+  <br></br>
+  <b>Invariance</b> is the default choice that we get when we define e.g. <code>class F[X]</code>. It means that if <code>A =!:= B</code> then <code>F[A] =!:= F[B]</code>.
+  Recommended for mutable data when e.g. <code>Collection[Cat]</code> if seen as <code>Collection[Pet]</code> and updated with <code>Dog</code> could break code expecting only <code>Cat</code>s.
+  <br><br>
+  <b>Covariance</b> is picked by preceeding parameter with <code>+</code>: <code>class F[+X]</code>. Suggests that <code>X</code> is the output of some producer,
+  so if <code>X</code> is a subtype of <code>Y</code> then it is safe to generalize <code>F[X]</code> to <code>F[Y]</code>.
+  <br><br>
+  <b>Contravariance</b> is picked by preceeding parameter with <code>-</code>: <code>class F[-X]</code>. Suggests that <code>X</code> is the input of some consumer,
+  so if <code>X</code> is a subtype of <code>Y</code> then it is safe to specify <code>F[Y]</code> to <code>F[X]</code>.`,
+  [
+    defineSource('Variances | Tour of Scala', 'https://docs.scala-lang.org/tour/variances.html'),
+    defineSource('Kinds of types in Scala, part 2: take type, return type or type parameters (Kubuszok.com blog)', 'https://kubuszok.com/2018/kinds-of-types-in-scala-part-2/#variance'),
+  ],
+  Category.language,
+  [
+    parametricTypes,
+    functor,
+    contravariant,
+  ]
+);
+
+const actorModel = defineTopic(
+  'Actor Model',
+  `TODO`,
+  [],
+  Category.akka,
+  []
+);
+
+// manual workaround for https://github.com/visjs/vis-network/issues/83 and https://github.com/visjs/vis-network/issues/84
+
+const reorderLevel = (left, right) => {
+  if (left.level !== right.level) {
+    console.warn(`Expected the same levels for ${left.id} and ${right.id}`);
+    return;
+  }
+  topics[right].hsort = topics[left].hsort + 1;
+};
+
+reorderLevel(implicits, parametricTypes);
+reorderLevel(parametricTypes, lifting);
+reorderLevel(lifting, algebra);
+reorderLevel(freeAlgebra, semigroup);
+reorderLevel(applicative, monoid);
+reorderLevel(monad, freeMonoid);
+reorderLevel(variance, monad);
