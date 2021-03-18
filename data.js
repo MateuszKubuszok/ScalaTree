@@ -86,9 +86,9 @@ const lifting = defineTopic(
   []
 );
 
-const algebras = defineTopic(
-  'Algebras',
-  `A sets of values together with operations closed under then (functions taking and returning values only this these sets),
+const algebra = defineTopic(
+  'Algebra',
+  `A set of values together with operations closed under it (functions taking and returning values only from this set),
   e.g. real numbers with +, -, *, /, square matrices of certain dimension with addition and multiplication of these matrices, etc.`,
   [],
   Category.fp,
@@ -102,7 +102,7 @@ const semigroup = defineTopic(
   [],
   Category.fp,
   [
-    algebras,
+    algebra,
   ]
 );
 
@@ -209,7 +209,7 @@ const freeAlgebra = defineTopic(
   Category.fp,
   [
     lifting,
-    algebras,
+    algebra,
   ]
 );
 
@@ -225,6 +225,7 @@ const freeMonoid = defineTopic(
   [],
   Category.fp,
   [
+    monoid,
     freeAlgebra,
   ]
 );
