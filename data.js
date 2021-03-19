@@ -42,7 +42,14 @@ const defineTopic = (name, description_, sources_, category_, requires_) => {
 
 const functions = defineTopic(
   'Function',
-  `TODO`,
+  `We have two sets of values. We create a set of pairs: one value from the former set, one from the latter.
+  If each value from the former set apprears exactly once, then we could unambiguosly tell what value it corresponds from the latter set.
+  <br><br>
+  We call such pairing a function. We call the former set <b>domain</b>/<b>set of arguments</b> and the latter <b>codomain</b>/<b>set of destination</b>.
+  Elements of domain we call <b>arguments</b>.
+  <br><br>
+  In mathematics virtually all functions assign values for all elements of their domain. In programming s function might also throw exception,
+  loop infinitely or terminate the program. One of the goals of (pure) FP is removal of these special cases where possible by making all functions <b>total</b>.`,
   [],
   Category.fp,
   []
@@ -50,7 +57,16 @@ const functions = defineTopic(
 
 const currying = defineTopic(
   'Currying',
-  `TODO`,
+  `If function takes more than one argument we might convert it into a function taking only one argument, but returning another function with this argument already applied.
+  <br><br>
+  <pre>
+  val f: (Int, Int) => Int   = (a, b) => a + b
+  println(f(1, 2))
+
+  val g: Int => (Int => Int) = a => b => f(a, b)
+  println(f(1)(2))
+  </pre>
+  Such multiple argument function turned into a chain of functions taking arguments one by one is called curried function, and the process of transforming them currying.`,
   [],
   Category.fp,
   [
@@ -286,6 +302,7 @@ const monad = defineTopic(
   [
     defineSource('Monad (Cats documentation)', 'https://typelevel.org/cats/typeclasses/monad.html'),
     defineSource('Different ways to understand a monad (Kubuszok.com blog)', 'https://kubuszok.com/2018/different-ways-to-understand-a-monad/'),
+    defineSource('The Functional Toolkit - Scott Wlaschin (video)', 'https://www.youtube.com/watch?v=bK-Tz-GLfOs'),
   ],
   Category.fp,
   [
@@ -400,86 +417,16 @@ const collections = defineTopic(
 
 
 const builder = defineTopic(
-    'Builder',
-    `TODO`,
-    [],
-    Category.patterns,
-    []
+  'Builder',
+  `TODO`,
+  [],
+  Category.patterns,
+  []
 );
 topics[builder].level = 4;
 
 const iterable = defineTopic(
-    'Iterable',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        collections,
-    ]
-);
-
-const seq = defineTopic(
-    'Seq',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        iterable,
-    ]
-);
-
-const set = defineTopic(
-    'Set',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        iterable,
-    ]
-);
-
-const map = defineTopic(
-    'Map',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        iterable,
-    ]
-);
-
-const vector = defineTopic(
-    'Vector',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        seq,
-    ]
-);
-
-const list = defineTopic(
-    'List',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        seq,
-    ]
-);
-
-const flatmap = defineTopic(
-    'flatMap',
-    `TODO`,
-    [],
-    Category.language,
-    [
-        iterable,
-    ]
-);
-
-const forSimplified = defineTopic(
-  'Simple for "loop"',
+  'Iterable',
   `TODO`,
   [],
   Category.language,
@@ -488,18 +435,122 @@ const forSimplified = defineTopic(
   ]
 );
 
+const seq = defineTopic(
+  'Seq',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    iterable,
+  ]
+);
+
+const set = defineTopic(
+  'Set',
+  `TODO`,
+  [],
+  Category.language,
+  [
+   iterable,
+  ]
+);
+
+const map = defineTopic(
+  'Map',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    iterable,
+  ]
+);
+
+const vector = defineTopic(
+  'Vector',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    seq,
+  ]
+);
+
+const list = defineTopic(
+  'List',
+  `TODO`,
+  [],
+  Category.language,
+  [
+    seq,
+  ]
+);
+
+const flatmap = defineTopic(
+  'flatMap',
+  `Shorthand for <code>.map(f).flatten</code>.
+  <br><br>
+  Requires that value returned by <code>f</code> is collection (if we are flatmapping collection) of the same type as what we call <code>.flatMap(f)</code> on.`,
+  [],
+  Category.language,
+  [
+    iterable,
+  ]
+);
+
+const forSimplified = defineTopic(
+  'For introduction',
+  `For can be used in two cases: without <code>yield</code> and <code>yield</code>.
+  <br><br>
+  For without <code>yield</code> acts similarly to for-loop from other lanugages where each <code>x <- xs</code> introducues a nested for-each loop.
+  <br><br>
+  <pre>
+  // Kind of like:
+  //  for (a : as)
+  //    for (b : bs) {
+  //      println(a + b);
+  //    }
+  // from Java
+  for {
+    a <- as
+    b <- bs
+  } println(a + b)
+  // returns Unit
+  </pre>
+  For with <code>yield</code> is treating each <code>x<- xs</code> as <code>xs></code> being producer of values, where each produced value is exposed as <code>x</code>.
+  Then, all <code>yield</code>ed values will be put into producer of the same type as <code>xs</code>.
+  <br><br>
+  <pre>
+  // Basically a cross-product / Cartesian product
+  for {
+    a <- as
+    b <- bs
+  } yield (a, b)
+  // If as, and bs are Lists, result is a List,
+  // if both are Options the result is an Option.
+  </pre>
+  Producers within a single for has to have the same producer type, but might differ types of values produced by each producer.`,
+  [
+    defineSource('For Comprehension | Tour of Scala', 'https://docs.scala-lang.org/tour/for-comprehensions.html'),
+    defineSource('For Expressions | Scala Book', 'https://docs.scala-lang.org/overviews/scala-book/for-expressions.html'),
+  ],
+  Category.language,
+  [
+    collections,
+  ]
+);
+
 const collectionBuilders = defineTopic(
-    'Collection builders',
-    `TODO`,
-    [],
-    Category.collections,
-    [
-        builder,
-        vector,
-        list,
-        set,
-        map,
-    ]
+  'Collection builders',
+  `TODO`,
+  [],
+  Category.collections,
+  [
+    builder,
+    vector,
+    list,
+    set,
+    map,
+  ]
 );
 
 const variance = defineTopic(
@@ -547,7 +598,30 @@ const forComprehension = defineTopic(
   [
     forSimplified,
     monad,
-    flatmap
+    flatmap,
+  ]
+);
+
+const sctLibChaining = defineTopic(
+  'scala.util.chaining',
+  `Nice utility added in Scala 2.13 which help us chaining operations by appending functions.
+  <br><br>
+  Instead of <code>f(g(h(a)))</code> we could write <code>(f andThen g andThen h)(a)</code> to preserve visually the order of operations.
+  However, if <code>a</code> as some result of chains of methods we would still have to make some effort to keep the order in our heads.
+  <br><br>
+  By importing <code>import scala.util.chaining._</code> we get another option: <code>a.pipe(f).pipe(g).pipe(h)</code>,
+  so everything could be done with a single, consistent, easy to read chain.
+  <br><br>
+  Another useful method added this way is <code>.tap</code>. It executes the function, BUT it doesn't use its result and returns original value instead.
+  It's a useful thing to avoid <code>expression.pipe { a => f(a); a }</code> which we could write if we wanted to use e.g. <code>println</code>
+  or mutable operation returning <code>Unit</code>.`,
+  [
+    defineSource('Scala Standard Library documentation', 'https://www.scala-lang.org/api/current/scala/util/package$$chaining$.html'),
+  ],
+  Category.language,
+  [
+    standardLibrary,
+    functions,
   ]
 );
 
@@ -566,7 +640,9 @@ const akkaActor = defineTopic(
   `TODO`,
   [],
   Category.akka,
-  [actor]
+  [
+    actor,
+  ]
 );
 
 

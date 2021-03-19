@@ -9,6 +9,10 @@ const setContent = topic => {
   document.getElementById('sources').innerHTML=sources;
   document.getElementById('content').classList.remove('no-topic');
   window.location.hash = topic.id;
+  document.querySelectorAll('code, pre').forEach((block) => {
+    block.classList.add('scala');
+    hljs.highlightBlock(block);
+  });
 };
 const unsetContent = () => {
   document.getElementById('content').classList.add('no-topic');

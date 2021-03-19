@@ -41,12 +41,21 @@ ul {
 #content > * {
   margin: 40px 40px 0 40px;
 }
+#content > *:last-child {
+  margin-bottom: 40px;
+}
 #content h2 {
   margin-top: 0;
 }
 #content hr {
   margin-left: 0;
   margin-right: 0;
+}
+#content code.hljs {
+  border-radius: 0.25em;
+  display: inline;
+  padding: 0.25em;
+
 }
 #content.no-topic h3, #content.no-topic fieldset { display: none; }
 
