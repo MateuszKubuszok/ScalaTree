@@ -658,7 +658,7 @@ const forComprehension = defineTopic(
   ]
 );
 
-const sctLibChaining = defineTopic(
+const stdLibChaining = defineTopic(
   'scala.util.chaining',
   `Nice utility added in Scala 2.13 which help us chaining operations by appending functions.
   <br><br>
@@ -718,8 +718,8 @@ const reorderLevel = (head, ...tail) => {
 
 
 reorderLevel(standardLibrary, types, functions, algebra);
-reorderLevel(tuple, either, parametricTypes, currying, implicits, lifting, semigroup);
-reorderLevel(collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
+reorderLevel(tuple, stdLibChaining, unit, implicits, parametricTypes, currying, lifting, semigroup);
+reorderLevel(either, collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
 reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
 reorderLevel(seq, set, map, flatmap, monad, variance);
 reorderLevel(forComprehension, freeMonad);
