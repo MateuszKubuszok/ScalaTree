@@ -29,18 +29,35 @@ ul {
 }
 #diagram {
   background: #f9f9f9;
-  width: 66%;
-  height: 100vh;
   margin: 0;
-  float: left;
 }
 #content {
   background: #f2f2f2;
-  width: 33.9%;
-  height: 100vh;
   margin: 0;
-  float: right;
   overflow: auto;
+}
+@media (orientation: landscape) {
+  #diagram {
+    width: 66%;
+    height: 100vh;
+    float: left;
+  }
+  #content {
+    width: 33.9%;
+    height: 100vh;
+    float: right;
+  }
+}
+@media (orientation: portrait) {
+  #diagram {
+    height: 66vh;
+    width: 100%;
+  }
+  #content {
+    margin-bottom: 0.1vh;
+    height: 33.9vh;
+    width: 100%;
+  }
 }
 #content > * {
   margin: 40px 40px 0 40px;
