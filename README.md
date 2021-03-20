@@ -2,7 +2,7 @@
 
 The idea of this project is to provide some easy-to-read information about the order of learning Scala-related concepts which would make things easier on the reader rather than harder.
 
-Order is presented using a directed graph. The reader could clock on each concept to see a short description and a list of sources.
+Order is presented using a directed graph. The reader could click on each concept to see a short description and a list of sources.
 
 ## Constribution
 
