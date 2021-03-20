@@ -46,11 +46,16 @@ const functions = defineTopic(
   If each value from the former set apprears exactly once, then we could unambiguosly tell what value it corresponds from the latter set.
   <br><br>
   We call such pairing a function. We call the former set <b>domain</b>/<b>set of arguments</b> and the latter <b>codomain</b>/<b>set of destination</b>.
-  Elements of domain we call <b>arguments</b>.
+  Elements of domain we call <b>arguments</b>. If we named our function <code>f</code> then <code>f(x)</code> describes value of <code>f</code>
+  at <code>x</code>.
   <br><br>
   In mathematics virtually all functions assign values for all elements of their domain. In programming s function might also throw exception,
-  loop infinitely or terminate the program. One of the goals of (pure) FP is removal of these special cases where possible by making all functions <b>total</b>.`,
-  [],
+  loop infinitely or terminate the program. One of the goals of (pure) FP is removal of these special cases where possible by making all functions <b>total</b>.
+  <br><br>
+  If function takes as an arguments and/or returns another function, we call it <b>higher-order function</b>.`,
+  [
+    defineSource('Higher-Order Functions | Tour of Scala', 'https://docs.scala-lang.org/tour/higher-order-functions.html'),
+  ],
   Category.fp,
   []
 );
@@ -88,37 +93,87 @@ const standardLibrary = defineTopic(
 
 const types = defineTopic(
   'Types',
-  `TODO`,
-  [],
+  `Type is basially a set of values. There are many ways we could define such set.
+  <br><br>
+  Sometimes we define this set by giving some constrainst a name, e.g. when we define a class or trait we require that each instance implemented certain methods.
+  Then, if something is claiming to be of type X, we can expect it will have a properties of type X. That's nominal typing.
+  <br><br>
+  Sometimes we do the opposite - we start by requiering some properties and methods and stating that if a value match the requirements it is our type.
+  That's a structural typing.
+  <br><br>
+  We could also take two already defined types and claim that our new type is made of both of them - that's a sum type.
+  <br><br>
+  And sometimes we can take several types and require that our type contain one value out of each of them. That would be a record, a tuple or a product type.
+  <br><br>
+  What is important is understanding that a type is a more general concept than a class.`,
+  [
+    defineSource('Scala’s Types of Types', 'https://ktoso.github.io/scala-types-of-types/'),
+    defineSource('Kinds of types in Scala, part 1: types, what are they? (Kubuszok.com blog)', 'https://kubuszok.com/2018/kinds-of-types-in-scala-part-1/'),
+  ],
   Category.language,
   []
 );
 
-const functionTypes = defineTopic(
-  'Function Types',
-  `TODO`,
-  [],
+const unit = defineTopic(
+  'Unit',
+  `<code>Unit</code> is a single-element (singleton) type. Its only element - <code>()</code> - does nothing.
+  <br><br>
+  The purpose of this type is describing functions returning no value - instead of making exceptions and special cases, we can define return type to <code>Unit</code>.
+  This way, all of normal function utilities: <code>andThen</code>, <code>combine</code> as well as parametric classes and methods just work on <code>Unit</code>
+  values rather than requireing user to definie separate methods and types.
+  <br><br>
+  You can see how helpful it is when you take a look at Java's solution, where instead of 1 function, they had to define functions, consumers, producers
+  and separate methods of composiing them together.`,
+  [
+    defineSource('Kinds of types in Scala, part 1: types, what are they? (Kubuszok.com blog)', 'https://kubuszok.com/2018/kinds-of-types-in-scala-part-1/#unit'),
+  ],
   Category.language,
   [
-    standardLibrary,
     functions,
-    currying,
+    standardLibrary,
     types,
   ]
 );
-
 
 const parametricTypes = defineTopic(
   'Parametric Types',
   `Known in Java as Generic Types and in C++ as Class Templates.
   Types which has to be parametrized with another type in order to create an instantiable type,
-  e.g. <code>List</code>, <code>Option</code>, <code>Function</code>, <code>IO</code>.`,
+  e.g. <code>List</code>, <code>Option</code>, <code>Function</code>, <code>IO</code>.
+  <br><br>
+  We define them by adding list of paramaters after class'/method's name: <code>def method[X]()</code>, <code>class Clazz[X]() {}</code>.`,
   [
     defineSource('Generic Classes | Tour of Scala', 'https://docs.scala-lang.org/tour/generic-classes.html'),
+    defineSource('Kinds of types in Scala, part 2: take type, return type or type parameters (Kubuszok.com blog)', 'https://kubuszok.com/2018/kinds-of-types-in-scala-part-2/'),
   ],
   Category.language,
   [
     types,
+  ]
+);
+
+
+const functionTypes = defineTopic(
+  'Function Types',
+  `Methods and functions aren't the same thing in Scala. Methods are tied to some object, functions can live on their own.
+  <br><br>
+  Functions are implemented as Single-Abstract-Methods with parametric types. New function implements <code>def apply(input): Output</code> method
+  and Scala allows us to tread all instances with <code>apply</code> method as something that we can call (like a function).
+  <br><br>
+  While usually we can turn method into a function (it's called <b>Eta-expansion</b>), in Scala 2 that might require some manual intervention
+  and certain operations, still would be impossible e.g. methods can be parametric, functions - while defined as parametric types - have to have all type parameters
+  applied to create a function value. If you want to create something which takes type parameters to <code>apply</code> you cannot do that with a function.
+  <br><br>
+  These issues are solved in Scala 3 which has better automatic Eta-expansion and <b>polymorphic function types</b>.`,
+  [
+    defineSource('Polymorphic Function Types', 'https://dotty.epfl.ch/docs/reference/new-types/polymorphic-function-types.html'),
+  ],
+  Category.language,
+  [
+    standardLibrary,
+    functions,
+    currying,
+    parametricTypes,
   ]
 );
 
@@ -381,6 +436,7 @@ const either = defineTopic(
   Category.language,
   [
     standardLibrary,
+    parametricTypes,
   ]
 );
 
