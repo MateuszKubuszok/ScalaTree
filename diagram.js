@@ -10,6 +10,9 @@ const hiddenEmptyDescriptionsClass = 'no-topic';
 
 // set #content elements, hash location and syntax highlighting
 const setContent = topic => {
+  const description = (topic.description !== '' && topic.description.toUpperCase() !== 'TODO') ?
+    topic.description :
+    'No description yet - if you want to help please contribute with a PR!';
   const sources = (topic.sources.length > 0) ? 
     ('<ul>' +
       topic.sources
@@ -17,14 +20,14 @@ const setContent = topic => {
         .map(src => '<li>' + src + '</li>')
         .join('') +
       '</ul>') :
-    'no sources';
+    'No sources yet - if you know some great sources please contribute with a PR!';
   const highlightElemement = block => {
     block.classList.add('scala');
     hljs.highlightBlock(block);
   };
 
   nameElement.innerHTML        = topic.name;
-  descriptionElement.innerHTML = topic.description;
+  descriptionElement.innerHTML = description;
   sourcesElement.innerHTML     = sources;
   window.location.hash         = topic.id;
 
