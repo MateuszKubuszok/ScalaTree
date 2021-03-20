@@ -182,14 +182,76 @@ const implicits = defineTopic(
   `Mechanism of finding and passing arguments into functions and methods by the compiler, based on their type.
   <br><br>
   Requires that in the current scope there is either only one definition of <code>sought</code> type marked as <code>implicit</code>
-  or that there is clearly only one closest to call site according to scoping rules.`,
+  or that there is clearly only one closest to call site according to scoping rules.
+  <br><br>
+  <pre>
+  class A(val a: Int)
+  class B(val b: String)
+  implicit val a: A = new A(10)
+  implicit def b: B = new B("foo")
+  
+  def getA(implicit aa: A): A = aa
+  def getB(implicit bb: B): A = bb
+
+  getA // returns a
+  getB // returns b
+
+  locally {
+    implicit val b2: B = new B("bar")
+    getB // compilation error - ambiguity!
+  }
+  getB // works again!
+  </pre>`,
   [
-    defineSource('Implicit Parameters | Tour of Scala', 'https://docs.scala-lang.org/tour/implicit-parameters.html'),
+    defineSource('Implicit Conversions | Tour of Scala', 'https://docs.scala-lang.org/tour/implicit-conversions.html'),
     defineSource('Implicits, type classes, and extension methods, part 1: with type classes in mind (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-1/'),
   ],
   Category.language,
   [
     types,
+  ]
+);
+
+const implicitConverions = defineTopic(
+  'Implicit Conversions and Extension Methods',
+  `Let's say you want to pass <code>A</code> assomething that expects <code>B</code>. There is no subtyping here. Normally, this won't compile.
+  <br><br>
+  <pre>
+  def getB(b: B) { ... }
+  val a: A = ...
+  getB(a) // compilation error
+  </pre>
+  However, if the implicit scope contains function <code>A => B</code> or <code>def</code> taking <code>A</code< and returning <code>B</code>
+  AND <code>scala.language.implicitConversion</code> flag is enabled, then the compiler will use that function to create <code>B</code> and pass it on.
+  <br><br>
+  <pre>
+  import scala.language.implicitConversion
+
+  implicit def aToB(a: A): B = ...
+
+  def getB(b: B) { ... }
+  val a: A = ...
+  getB(a) // compiles!
+  </pre>
+  Normally, this is considered dangerous, however there is one exception. If we want to call a method on <code>A</code> that <code>A</code> doesn't have
+  AND there is an implicit conversion to <code>B</code> AND <code>B</code> has that method (and all of that is unambiguous) then the compiler will
+  convert <code>A</code> to <code>B</code> and call that method. That's Scala 2 ways of implementing extension methods.
+  <br><br>
+  If some class exists only to provide extension methods we can combine defining the class and extension method with <code>implicit class</code>.
+  <br><br>
+  <pre>
+  implicit class B(private val a: A) {
+    // methods
+  }
+  </pre>`,
+  [
+    defineSource('Implicit Classes | Scala Documentation', 'https://docs.scala-lang.org/overviews/core/implicit-classes.html'),
+    defineSource('Implicits, type classes, and extension methods, part 3: conversions and implicit-based patterns (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-3/'),
+  ],
+  Category.language,
+  [
+    implicits,
+    functionTypes,
   ]
 );
 
@@ -421,11 +483,19 @@ const freeMonad = defineTopic(
 
 const tuple = defineTopic(
   'Tuple',
-  `TODO`,
+  `A tuple is a pair, triple, quadruple, etc of values, where each value has an assigned position.
+  <br><br>
+  A tuple of 2 integers is <code>(1, 1): (Int, Int)</code>, a tuple of integer, double and string is <code>(1, 1.0, "a"): (Int, Double, String)</code>, etc.
+  <br><br>
+  Tuples are the easiest, build-in way of having a record/product type. Tuples of 2 are very often the result of some computations.
+  <br><br>
+  Their main disadvantage is that none of values has a meaningful name, only <code>_1</code>, <code>_2</code>, <code>_3</code>, ...
+  To create your own record type with meaningful names, you have to use a <code>case class</code>.`,
   [],
   Category.language,
   [
     standardLibrary,
+    types,
   ]
 );
 
@@ -479,7 +549,7 @@ const builder = defineTopic(
   Category.patterns,
   []
 );
-topics[builder].level = 4;
+topics[builder].level = 6;
 
 const iterable = defineTopic(
   'Iterable',
@@ -553,8 +623,8 @@ const flatmap = defineTopic(
   ]
 );
 
-const forSimplified = defineTopic(
-  'For introduction',
+const forIntroduction = defineTopic(
+  'For Introduction',
   `For can be used in two cases: without <code>yield</code> and <code>yield</code>.
   <br><br>
   For without <code>yield</code> acts similarly to for-loop from other lanugages where each <code>x <- xs</code> introducues a nested for-each loop.
@@ -595,6 +665,43 @@ const forSimplified = defineTopic(
   ]
 );
 
+const implicitDerivation = defineTopic(
+  'Implicit Derivation',
+  `Implicit <code>def</code> itself can take implicit parameters. If we add type parameters to it, we could generate implicit values recursively.
+  Usually, we do it for type classes.
+  <br><br>
+  <pre>
+  trait Provide[T] { def provide(): T }
+  object Provide { def apply[T](implicit p: Provide[T]) = p }
+  // Single Abstract Method notation
+  implicit val a: Provide[Int] = () => 1
+  implicit val b: Provide[Double] = () => 1.0
+  implicit val c: Provide[String] = () => "foo"
+  // type class notation
+  implicit def tuple[A: Provide, B: Provide]: Provide[(A, B)] =
+    () => (Provide[A], Provide[B])
+  // generated on demand
+  Provide[(Int, String)]
+  Provide[(Int, Int)]
+  Provide[(Double, Double)]
+  </pre>
+  Libraries like Shapeless and Magnolia generalizes this behavior allowing you to generate derive type classes for sealed hierarchies and case classes.
+  As long as you model your data as case classes/objects and sealed traits/classes, you only have to provide implicits for "primitives" and libraries would do the rest.`,
+  [
+    defineSource('The Type Astronaut’s Guide to Shapeless (Undershore.io book)', 'https://books.underscore.io/shapeless-guide/shapeless-guide.html'),
+    defineSource('Implicits, type classes, and extension methods, part 2: implicit derivation (Kubuszok.com blog)', 'https://kubuszok.com/2018/implicits-type-classes-and-extension-methods-part-2/'),
+    defineSource('Introduction to TypeLevel (Meta)Programming with Shapeless (workshop)', 'https://github.com/krzemin/scalawave-typelevel-workshop'),
+  ],
+  Category.collections,
+  [
+    implicits,
+    typeClasses,
+    parametricTypes,
+    // TODO: caseClasses,
+    // TODO: sealedTraits
+  ]
+);
+
 const collectionBuilders = defineTopic(
   'Collection builders',
   `TODO`,
@@ -622,7 +729,7 @@ const variance = defineTopic(
   so if <code>X</code> is a subtype of <code>Y</code> then it is safe to generalize <code>F[X]</code> to <code>F[Y]</code>.
   <br><br>
   <b>Contravariance</b> is picked by preceeding parameter with <code>-</code>: <code>class F[-X]</code>. Suggests that <code>X</code> is the input of some consumer,
-  so if <code>X</code> is a subtype of <code>Y</code> then it is safe to specify <code>F[Y]</code> to <code>F[X]</code>.`,
+  so if <code>X</code> is a subtype of <code>Y</code> then it is safe to specialize <code>F[Y]</code> to <code>F[X]</code>.`,
   [
     defineSource('Variances | Tour of Scala', 'https://docs.scala-lang.org/tour/variances.html'),
     defineSource('Kinds of types in Scala, part 2: take type, return type or type parameters (Kubuszok.com blog)', 'https://kubuszok.com/2018/kinds-of-types-in-scala-part-2/#variance'),
@@ -635,8 +742,8 @@ const variance = defineTopic(
   ]
 );
 
-const forComprehension = defineTopic(
-  'For-comprehension',
+const forUnderTheHood = defineTopic(
+  'For Under the Hood',
   `Syntactic sugar for: <code>map</code>, <code>flatMap</code>, <code>foreach</code> and <code>withFilter</code>:
   <br><br>
   <ul>
@@ -652,7 +759,7 @@ const forComprehension = defineTopic(
   ],
   Category.language,
   [
-    forSimplified,
+    forIntroduction,
     monad,
     flatmap,
   ]
@@ -720,6 +827,6 @@ const reorderLevel = (head, ...tail) => {
 reorderLevel(standardLibrary, types, functions, algebra);
 reorderLevel(tuple, stdLibChaining, unit, implicits, parametricTypes, currying, lifting, semigroup);
 reorderLevel(either, collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
-reorderLevel(forSimplified, applicative, contravariant, freeMonoid);
-reorderLevel(seq, set, map, flatmap, monad, variance);
-reorderLevel(forComprehension, freeMonad);
+reorderLevel(iterable, implicitConverions, implicitDerivation, forIntroduction, contravariant, applicative, freeMonoid);
+reorderLevel(seq, set, map, variance, flatmap, monad);
+reorderLevel(forUnderTheHood, freeMonad);

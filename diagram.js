@@ -86,6 +86,7 @@ const options = {
   },
   nodes: {
     shape: 'box',
+    widthConstraint: 100,
   },
   groups: {
     [Category.language]: {
