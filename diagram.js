@@ -1,25 +1,44 @@
-// set #content elements and hash location
+// HTML elements
+const diagramElement     = document.getElementById('diagram');
+const contentElement     = document.getElementById('content');
+const nameElement        = document.getElementById('name');
+const descriptionElement = document.getElementById('description');
+const sourcesElement     = document.getElementById('sources');
+const codeElements       = () => document.querySelectorAll('code, pre');
+
+const hiddenEmptyDescriptionsClass = 'no-topic';
+
+// set #content elements, hash location and syntax highlighting
 const setContent = topic => {
-  document.getElementById('name').innerHTML=topic.name;
-  document.getElementById('description').innerHTML=topic.description;
-  const sources = '<ul>' + topic.sources.map(source => {
-    if (source.href) return '<a href="' + source.href + '">' + source.title + '</a>';
-    else return source.title;
-  }).map(src => '<li>' + src + '</li>').join('') + '</ul>';
-  document.getElementById('sources').innerHTML=sources;
-  document.getElementById('content').classList.remove('no-topic');
-  window.location.hash = topic.id;
-  document.querySelectorAll('code, pre').forEach((block) => {
+  const sources = (topic.sources.length > 0) ? 
+    ('<ul>' +
+      topic.sources
+        .map(src => src.href ? ('<a href="' + src.href + '">' + src.title + '</a>') : src.title)
+        .map(src => '<li>' + src + '</li>')
+        .join('') +
+      '</ul>') :
+    'no sources';
+  const highlightElemement = block => {
     block.classList.add('scala');
     hljs.highlightBlock(block);
-  });
+  };
+
+  nameElement.innerHTML        = topic.name;
+  descriptionElement.innerHTML = topic.description;
+  sourcesElement.innerHTML     = sources;
+  window.location.hash         = topic.id;
+
+  codeElements().forEach(highlightElemement);
+  contentElement.classList.remove(hiddenEmptyDescriptionsClass);
 };
+// clear fields and hide empty fieldsets
 const unsetContent = () => {
-  document.getElementById('content').classList.add('no-topic');
-  document.getElementById('name').innerHTML="";
-  document.getElementById('description').innerHTML="";
-  document.getElementById('sources').innerHTML="";
-  window.location.hash = '';
+  contentElement.classList.add(hiddenEmptyDescriptionsClass);
+
+  nameElement.innerHTML        = '';
+  descriptionElement.innerHTML = '';
+  sourcesElement.innerHTML     = '';
+  window.location.hash         = '';
 };
 
 // manual workaround for https://github.com/visjs/vis-network/issues/83 and https://github.com/visjs/vis-network/issues/84
@@ -30,10 +49,8 @@ const topicsOrder = (() => {
 })();
 const sortedTopics = Object.values(topics).sort((a, b) => topicsOrder[a.id] - topicsOrder[b.id]);
 
-// create an array with nodes
+// Graph's data
 const nodes = new vis.DataSet(sortedTopics);
-
-// create an array with edges
 const edges = new vis.DataSet(
   sortedTopics.flatMap(topic => topic.requires.map(parentId => ({
     from   : parentId,
@@ -42,15 +59,12 @@ const edges = new vis.DataSet(
   })))
   .sort((a, b) => topicsOrder[a.to] - topicsOrder[b.to])
 );
-
-// create a network
-const container = document.getElementById('diagram');
-
-// provide the data in the vis format
 const data = {
   nodes: nodes,
   edges: edges,
 };
+
+// Vis.js options
 const options = {
   autoResize: true,
   height: '100%',
@@ -94,8 +108,8 @@ const options = {
   }
 };
 
-// initialize your network!
-const network = new vis.Network(container, data, options);
+// initialize Graph and connect listeners
+const network = new vis.Network(diagramElement, data, options);
 network.on('selectNode', params => {
   if (params.nodes.length > 0) {
     setContent(topics[params.nodes[0]]);
@@ -104,6 +118,17 @@ network.on('selectNode', params => {
 network.on('deselectNode', params => {
   unsetContent();
 });
+network.on('hoverNode', params => {
+  network.canvas.body.container.style.cursor = 'pointer'
+});
+network.on('blurNode', params => {
+  network.canvas.body.container.style.cursor = 'default'
+});
+network.on('stabilizationIterationsDone', params => {
+  network.setOptions( { physics: false } );
+});
+
+// bind location hash to node selection
 const traceHashChange = () => {
   const hash = window.location.hash.replace('#', '');
   if (hash === '') return;
@@ -114,17 +139,5 @@ const traceHashChange = () => {
     setContent(topic);
   }
 };
-network.on("hoverNode", function (params) {
-  network.canvas.body.container.style.cursor = 'pointer'
-});
-network.on("blurNode", function (params) {
-  network.canvas.body.container.style.cursor = 'default'
-});
-
-
-traceHashChange();
 window.onhashchange = traceHashChange;
-
-network.on("stabilizationIterationsDone", function(){
-  network.setOptions( { physics: false } );
-});
+traceHashChange();
