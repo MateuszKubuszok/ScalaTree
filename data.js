@@ -63,7 +63,6 @@ const functions = defineTopic(
 const currying = defineTopic(
   'Currying',
   `If function takes more than one argument we might convert it into a function taking only one argument, but returning another function with this argument already applied.
-  <br><br>
   <pre>
   val f: (Int, Int) => Int   = (a, b) => a + b
   println(f(1, 2))
@@ -183,7 +182,6 @@ const implicits = defineTopic(
   <br><br>
   Requires that in the current scope there is either only one definition of <code>sought</code> type marked as <code>implicit</code>
   or that there is clearly only one closest to call site according to scoping rules.
-  <br><br>
   <pre>
   class A(val a: Int)
   class B(val b: String)
@@ -215,7 +213,6 @@ const implicits = defineTopic(
 const implicitConverions = defineTopic(
   'Implicit Conversions and Extension Methods',
   `Let's say you want to pass <code>A</code> assomething that expects <code>B</code>. There is no subtyping here. Normally, this won't compile.
-  <br><br>
   <pre>
   def getB(b: B) { ... }
   val a: A = ...
@@ -223,7 +220,6 @@ const implicitConverions = defineTopic(
   </pre>
   However, if the implicit scope contains function <code>A => B</code> or <code>def</code> taking <code>A</code< and returning <code>B</code>
   AND <code>scala.language.implicitConversion</code> flag is enabled, then the compiler will use that function to create <code>B</code> and pass it on.
-  <br><br>
   <pre>
   import scala.language.implicitConversion
 
@@ -238,7 +234,6 @@ const implicitConverions = defineTopic(
   convert <code>A</code> to <code>B</code> and call that method. That's Scala 2 ways of implementing extension methods.
   <br><br>
   If some class exists only to provide extension methods we can combine defining the class and extension method with <code>implicit class</code>.
-  <br><br>
   <pre>
   implicit class B(private val a: A) {
     // methods
@@ -628,7 +623,6 @@ const forIntroduction = defineTopic(
   `For can be used in two cases: without <code>yield</code> and <code>yield</code>.
   <br><br>
   For without <code>yield</code> acts similarly to for-loop from other lanugages where each <code>x <- xs</code> introducues a nested for-each loop.
-  <br><br>
   <pre>
   // Kind of like:
   //  for (a : as)
@@ -644,7 +638,6 @@ const forIntroduction = defineTopic(
   </pre>
   For with <code>yield</code> is treating each <code>x<- xs</code> as <code>xs></code> being producer of values, where each produced value is exposed as <code>x</code>.
   Then, all <code>yield</code>ed values will be put into producer of the same type as <code>xs</code>.
-  <br><br>
   <pre>
   // Basically a cross-product / Cartesian product
   for {
@@ -669,7 +662,6 @@ const implicitDerivation = defineTopic(
   'Implicit Derivation',
   `Implicit <code>def</code> itself can take implicit parameters. If we add type parameters to it, we could generate implicit values recursively.
   Usually, we do it for type classes.
-  <br><br>
   <pre>
   trait Provide[T] { def provide(): T }
   object Provide { def apply[T](implicit p: Provide[T]) = p }
