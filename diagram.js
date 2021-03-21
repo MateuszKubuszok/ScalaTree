@@ -10,8 +10,10 @@ const hiddenEmptyDescriptionsClass = 'no-topic';
 
 // set #content elements, hash location and syntax highlighting
 const setContent = topic => {
+  console.log(topic.description);
+  console.log(topic.description.split('\n'));
   const description = (topic.description !== '' && topic.description.toUpperCase() !== 'TODO') ?
-    topic.description :
+    topic.description.split('\n').map(str => str.substring(2)).join('\n') :
     'No description yet - if you want to help please contribute with a PR!';
   const sources = (topic.sources.length > 0) ? 
     ('<ul>' +

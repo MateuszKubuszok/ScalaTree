@@ -673,13 +673,16 @@ const implicitDerivation = defineTopic(
   <pre>
   trait Provide[T] { def provide(): T }
   object Provide { def apply[T](implicit p: Provide[T]) = p }
+  
   // Single Abstract Method notation
   implicit val a: Provide[Int] = () => 1
   implicit val b: Provide[Double] = () => 1.0
   implicit val c: Provide[String] = () => "foo"
+
   // type class notation
   implicit def tuple[A: Provide, B: Provide]: Provide[(A, B)] =
     () => (Provide[A], Provide[B])
+  
   // generated on demand
   Provide[(Int, String)]
   Provide[(Int, Int)]
@@ -703,7 +706,7 @@ const implicitDerivation = defineTopic(
 );
 
 const collectionBuilders = defineTopic(
-  'Collection builders',
+  'Collection Builders',
   `TODO`,
   [],
   Category.collections,
@@ -828,5 +831,5 @@ reorderLevel(standardLibrary, types, functions, algebra);
 reorderLevel(tuple, stdLibChaining, unit, implicits, parametricTypes, currying, lifting, semigroup);
 reorderLevel(either, collections, functionTypes, typeClasses, functor, freeAlgebra, monoid);
 reorderLevel(iterable, implicitConverions, implicitDerivation, forIntroduction, contravariant, applicative, freeMonoid);
-reorderLevel(seq, set, map, variance, flatmap, monad);
-reorderLevel(forUnderTheHood, freeMonad);
+reorderLevel(seq, set, map, flatmap, variance, monad);
+reorderLevel(vector, list, builder, forUnderTheHood, freeMonad);
